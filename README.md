@@ -1,4 +1,4 @@
-# planificador-parques-diversiones
+# pwa-parcial
 
 ## Project setup
 ```
