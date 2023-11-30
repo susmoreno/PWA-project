@@ -1,0 +1,36 @@
+{
+    "name": "Rick and Morty App",
+    "short_name": "R&M App",
+    "description": "Una increíble aplicación de Rick and Morty",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#582091",
+    "theme_color": "#582091",
+    "icons": [
+      {
+        "src": "/img/icons/icon75x77.png",
+        "sizes": "72x72",
+        "type": "image/png"
+      },
+      {
+        "src": "/img/icons/icon144x144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      },
+      {
+        "src": "/img/icons/icon192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/img/icons/icon475x475.png",
+        "sizes": "384x384",
+        "type": "image/png"
+      },
+      {
+        "src": "/img/icons/icon512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
