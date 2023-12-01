@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from "firebase/firestore"; 
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';  // Asegúrate de importar signInWithEmailAndPassword correctamente
+import { getFirestore } from "firebase/firestore";
 
 console.log("Firebase initialized successfully");
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,6 +23,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
 const db = getFirestore(app);
 
-export { db, auth };
+export { db, auth, signInWithEmailAndPassword, signOut };
 
 console.log(auth);

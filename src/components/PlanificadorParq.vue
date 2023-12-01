@@ -110,24 +110,68 @@
       ocultarModal() {
         this.estadoModal = false;
       },
+
+
       verPersonaje(url) {
-        fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            const { name, status, species, image, gender } = data;
-            this.personajeElegido = { name, status, species, image, gender, url };
-  
-            const existe = this.storage.some((p) => p.url === url);
-            if (!existe) {
-              this.guardarPersonajeLocal(this.personajeElegido, url);
-              this.mensajeAgregado = true;
-            } else {
-              this.mensajeAgregado = false;
-            }
-  
-            this.mostrarModal();
-          });
-      },
+  if (navigator.onLine) {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('No se pudo cargar el personaje');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const { name, status, species, image, gender } = data;
+        this.personajeElegido = { name, status, species, image, gender, url };
+
+        const existe = this.storage.some((p) => p.url === url);
+        if (!existe) {
+          this.guardarPersonajeLocal(this.personajeElegido, url);
+          this.mensajeAgregado = true;
+        } else {
+          this.mensajeAgregado = false;
+        }
+
+        this.mostrarModal();
+      })
+      .catch(() => {
+        this.personajeElegido = null;
+        this.mensajeAgregado = false;
+        this.mostrarModal();
+      });
+  } else {
+    caches.match(url)
+      .then((response) => {
+        if (response) {
+          return response.json();
+        } else {
+          throw new Error('No se pudo cargar el personaje');
+        }
+      })
+      .then((data) => {
+        const { name, status, species, image, gender } = data;
+        this.personajeElegido = { name, status, species, image, gender, url };
+
+        const existe = this.storage.some((p) => p.url === url);
+        if (!existe) {
+          this.guardarPersonajeLocal(this.personajeElegido, url);
+          this.mensajeAgregado = true;
+        } else {
+          this.mensajeAgregado = false;
+        }
+
+        this.mostrarModal();
+      })
+      .catch(() => {
+        this.personajeElegido = null;
+        this.mensajeAgregado = false;
+        this.mostrarModal();
+      });
+  }
+},
+
+
       limpiarLocalStorage() {
         localStorage.removeItem("storage");
         this.storage = [];

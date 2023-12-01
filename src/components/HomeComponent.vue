@@ -1,46 +1,46 @@
 <template>
-    <div class="home">
-      <!-- Banner -->
-      <div class="banner">
-        <img :src="require(`@/assets/${banner.img}`)" alt="banner">
-      </div>
-      
-      <!-- Título -->
-      <h1>Rick and Morty</h1>
-  
-      <!-- Botón de instalación -->
-      <div class="pwa">
-        <button class="pwaboton" v-if="showInstallPrompt" @click="instalarPWA">
-          Instalar R&M App
-        </button>
-      </div>
-  
-      <!-- Secciones -->
-      <div v-for="(section, index) in sections" :key="index" class="seccionesflex">
-        <div class="flex" :class="{ 'flex-reverse': index % 2 !== 0 }">
-          <!-- Imagen de la sección -->
-          <div class="imagen animate__animated">
-            <img :src="require(`@/assets/${section.img}`)" alt="seccion imagenes">
-          </div>
-          <!-- Contenido de la sección -->
-          <div>
-            <h2 class="animate__animated animate__fadeInRight ">{{ section.title }}</h2>
-            <p class="animate__animated animate__fadeIn animate__delay-1s">{{ section.content }}</p>
-          </div>
+  <div class="home">
+    <!-- Banner -->
+    <div class="banner">
+      <img :src="require(`@/assets/${banner.img}`)" alt="banner">
+    </div>
+    
+    <!-- Título -->
+    <h1>Rick and Morty</h1>
+
+    <!-- Botón de instalación -->
+    <div class="pwa">
+      <button class="pwaboton" v-if="showInstallPrompt" @click="instalarPWA">
+        Instalar R&M App
+      </button>
+    </div>
+
+    <!-- Secciones -->
+    <div v-for="(section, index) in sections" :key="index" class="seccionesflex">
+      <div class="flex" :class="{ 'flex-reverse': index % 2 !== 0 }">
+        <!-- Imagen de la sección -->
+        <div class="imagen animate__animated">
+          <img :src="require(`@/assets/${section.img}`)" alt="seccion imagenes">
+        </div>
+        <!-- Contenido de la sección -->
+        <div>
+          <h2 class="animate__animated animate__fadeInRight ">{{ section.title }}</h2>
+          <p class="animate__animated animate__fadeIn animate__delay-1s">{{ section.content }}</p>
         </div>
       </div>
-  
-      <!-- Pantalla de carga -->
-      <div v-if="loading" class="loading-screen">
-        <p>Loading...</p>
-      </div>
-  
-      <!-- Mensajes de error -->
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
     </div>
-  </template>
+
+    <!-- Pantalla de carga -->
+    <div v-if="loading" class="loading-screen">
+      <p>Loading...</p>
+    </div>
+
+    <!-- Mensajes de error -->
+    <div v-if="error" class="error-message">
+      {{ error }}
+    </div>
+  </div>
+</template>
   
   <script>
   export default {
@@ -82,101 +82,102 @@
         installPromptEvent: null,
       };
     },
-    methods: {
-      cargarDatos() {
-        console.log('cargarDatos: Iniciando carga de datos');
-        this.loading = true;
-        this.error = null;
-  
-        try {
-          // Simulación de carga de datos
-          setTimeout(() => {
-            this.showInstallPrompt = true;
-          }, 2000);
-        } catch (error) {
-          console.error('Error al cargar datos:', error);
-          this.error = 'Error al cargar datos. Por favor, verifica tu conexión.';
-        } finally {
-          this.loading = false;
-        }
-      },
-      async instalarPWA() {
-    console.log('instalarPWA: Intentando instalar la aplicación');
-    if (window.installPromptEvent) {
+  methods: {
+    cargarDatos() {
+      console.log('cargarDatos: Iniciando carga de datos');
+      this.loading = true;
+      this.error = null;
+
       try {
-        await window.installPromptEvent.prompt();
-        const choiceResult = await window.installPromptEvent.userChoice;
-  
-        if (choiceResult.outcome === 'accepted') {
-          console.log('Usuario aceptó la instalación');
-          // Ocultar el botón después de la instalación
-          this.showInstallPrompt = false;
-          this.isAppInstalled = true;
-        } else {
-          console.log('Usuario canceló la instalación');
-        }
+        // Simulación de carga de datos
+        setTimeout(() => {
+          this.showInstallPrompt = true;
+        }, 2000);
       } catch (error) {
-        console.error('Error al procesar la elección del usuario:', error);
+        console.error('Error al cargar datos:', error);
+        this.error = 'Error al cargar datos. Por favor, verifica tu conexión.';
       } finally {
-        // Restablecer el evento global
-        window.installPromptEvent = null;
+        this.loading = false;
       }
-    }
-  
-    // Reiniciar showInstallPrompt a false después de la instalación
-    this.showInstallPrompt = false;
-  },
-  
-  handleBeforeInstallPrompt(event) {
-    console.log('handleBeforeInstallPrompt: Evento de instalación disponible');
-    if (!this.isAppInstalled && !this.showInstallPrompt && !this.installPromptEvent) {
-      this.showInstallPrompt = true;
-      this.installPromptEvent = event;
-    }
-  },
     },
-    mounted() {
-      console.log('mounted: El componente ha sido montado en el DOM');
-      this.cargarDatos();
-  
-      // Verificar si la propiedad local antes de la instalación ya está disponible
-      if (typeof this.installPromptEvent !== 'undefined') {
-        this.handleBeforeInstallPrompt(this.installPromptEvent);
+    async instalarPWA() {
+      console.log('instalarPWA: Intentando instalar la aplicación');
+      if (window.installPromptEvent) {
+        try {
+          await window.installPromptEvent.prompt();
+          const choiceResult = await window.installPromptEvent.userChoice;
+
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuario aceptó la instalación');
+            // Almacenar en LocalStorage que la aplicación está instalada
+            localStorage.setItem('appInstalled', 'true');
+
+            // Actualizar el estado del botón
+            this.showInstallPrompt = false;
+            this.isAppInstalled = true;
+          } else {
+            console.log('Usuario canceló la instalación');
+          }
+        } catch (error) {
+          console.error('Error al procesar la elección del usuario:', error);
+        } finally {
+          // Restablecer el evento global
+          window.installPromptEvent = null;
+        }
       }
-  
-      window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
-  
-      window.addEventListener('appinstalled', () => {
-        console.log('La aplicación se instaló con éxito');
-        // Restablecer el evento global
-        window.installPromptEvent = null;
-        // Ocultar el botón después de la instalación
-        this.showInstallPrompt = false;
-        this.isAppInstalled = true;
-      });
     },
-    beforeDestroy() {
-      console.log('beforeDestroy: Se ejecuta antes de destruir el componente');
-      window.removeEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', () => {});
-  
-      // Limpiar el estado
+    handleBeforeInstallPrompt(event) {
+      console.log('handleBeforeInstallPrompt: Evento de instalación disponible');
+      if (!this.isAppInstalled && !this.showInstallPrompt && !this.installPromptEvent) {
+        this.showInstallPrompt = true;
+        this.installPromptEvent = event;
+      }
+    },
+  },
+  mounted() {
+    console.log('mounted: El componente ha sido montado en el DOM');
+
+    // Cargar datos
+    this.cargarDatos();
+
+    // Suscribirse al evento de instalación
+    window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
+
+    window.addEventListener('appinstalled', () => {
+      console.log('La aplicación se instaló con éxito');
+      // Restablecer el evento global
+      window.installPromptEvent = null;
+
+      // Actualizar LocalStorage
+      localStorage.setItem('appInstalled', 'true');
+
+      // Actualizar el estado del botón
       this.showInstallPrompt = false;
-    },
-  };
-  </script>
-  
-  <style scoped>
-    @import "@/assets/styles.css";
-  
-    .loading-screen p {
-      color: whitesmoke;
-      font-size: 2rem;
-    }
-  
-    .pwa {
-      background-color: rgb(88, 28, 145);
-      padding: 1rem;
-    }
-  </style>
+      this.isAppInstalled = true;
+    });
+
+    // Verificar el estado de instalación al cargar la página
+    const appInstalled = localStorage.getItem('appInstalled');
+    this.isAppInstalled = appInstalled === 'true';
+
+    // Actualizar el estado del botón
+    this.showInstallPrompt = !this.isAppInstalled;
+  },
+};
+</script>
+
+
+<style scoped>
+  @import "@/assets/styles.css";
+
+  .loading-screen p {
+    color: whitesmoke;
+    font-size: 2rem;
+  }
+
+  .pwa {
+    background-color: rgb(88, 28, 145);
+    padding: 1rem;
+  }
+</style>
   

@@ -1,4 +1,4 @@
-import { register } from 'register-service-worker'
+import { register } from 'register-service-worker';
 
 if (process.env.NODE_ENV === 'production') {
   const swUrl = `${process.env.BASE_URL}service-worker.js`;
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
       console.log('Nuevo contenido disponible; por favor, actualiza la página.');
     },
     offline() {
-      console.log('No se encontró conexión a Internet. La aplicación se ejecuta en modo sin conexión.');
+      console.log('La aplicación se ejecuta en modo sin conexión.');
     },
     error(error) {
       console.error('Error durante el registro del Service Worker:', error);

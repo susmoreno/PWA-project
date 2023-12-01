@@ -2,7 +2,7 @@
     "name": "Rick and Morty App",
     "short_name": "R&M App",
     "description": "Una increíble aplicación de Rick and Morty",
-    "start_url": "/",
+    "start_url": "/inicio",
     "display": "standalone",
     "background_color": "#582091",
     "theme_color": "#582091",
