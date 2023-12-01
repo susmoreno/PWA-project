@@ -18,6 +18,11 @@
     <p class="fw-bold text-light">Especie: {{ personajeElegido?.species }}</p>
     <p class="fw-bold text-light">Género: {{ personajeElegido?.gender }}</p>
     <p class="fw-bold text-light">URL: {{ personajeElegido?.url }}</p>
+    <div v-if="!personajeElegido">
+        <p class="msjito" v-if="mensajeError">
+          Imposible traer información de este personaje. Verifique su conexión a Internet e inténtelo de nuevo.
+        </p>
+      </div>
   </div>
             <div class="modal-footer">
               <button @click="ocultarModal" type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Close</button>
@@ -53,66 +58,65 @@
   </template>
   
   <script>
-  export default {
-    data() {
-      return {
-        estadoModal: false,
-        personajeElegido: null,
-        personajes: [],
-        storage: [],
-        mensajeAgregado: false,
-      };
-    },
-    methods: {
-      guardarLocalStorage() {
-        localStorage.setItem("personajes", JSON.stringify(this.personajes));
-      },
-      guardarPersonajeLocal(data, url) {
-        const personaje = { ...data, url };
-        const storage = JSON.parse(localStorage.getItem("storage")) || [];
-  
-        const existe = storage.some((p) => p.url === url);
-        if (!existe) {
-          storage.push(personaje);
-          this.storage = storage;
-          localStorage.setItem("storage", JSON.stringify(storage));
-        }
-      },
-      obtenerPersonajeStorage(url) {
-        const storage = JSON.parse(localStorage.getItem("storage")) || [];
-  
-        const personaje = storage.find((personaje) => personaje.url === url);
-        return personaje || null;
-      },
-      obtenerLocalStorage() {
-    try {
-      const personajes = localStorage.getItem("personajes");
-      const storage = localStorage.getItem("storage");
-  
-      if (personajes !== null) {
-        this.personajes = JSON.parse(personajes);
-      } else {
-        console.warn("No tienes nada agregado en tu LocalStorage");
-      }
-  
-      if (storage !== null) {
-        this.storage = JSON.parse(storage);
-      } else {
-        console.warn("No tienes nada agregado en tu LocalStorage");
-      }
-    } catch (error) {
-      console.error("Error al analizar JSON:", error);
-    }
+export default {
+  data() {
+    return {
+      estadoModal: false,
+      personajeElegido: null,
+      personajes: [],
+      storage: [],
+      mensajeAgregado: false,
+      mensajeError: false,
+    };
   },
-      mostrarModal() {
-        this.estadoModal = true;
-      },
-      ocultarModal() {
-        this.estadoModal = false;
-      },
+  methods: {
+    guardarLocalStorage() {
+      localStorage.setItem("personajes", JSON.stringify(this.personajes));
+    },
+    guardarPersonajeLocal(data, url) {
+      const personaje = { ...data, url };
+      const storage = JSON.parse(localStorage.getItem("storage")) || [];
 
+      const existe = storage.some((p) => p.url === url);
+      if (!existe) {
+        storage.push(personaje);
+        this.storage = storage;
+        localStorage.setItem("storage", JSON.stringify(storage));
+      }
+    },
+    obtenerPersonajeStorage(url) {
+      const storage = JSON.parse(localStorage.getItem("storage")) || [];
 
-      verPersonaje(url) {
+      const personaje = storage.find((personaje) => personaje.url === url);
+      return personaje || null;
+    },
+    obtenerLocalStorage() {
+      try {
+        const personajes = localStorage.getItem("personajes");
+        const storage = localStorage.getItem("storage");
+
+        if (personajes !== null) {
+          this.personajes = JSON.parse(personajes);
+        } else {
+          console.warn("No tienes nada agregado en tu LocalStorage");
+        }
+
+        if (storage !== null) {
+          this.storage = JSON.parse(storage);
+        } else {
+          console.warn("No tienes nada agregado en tu LocalStorage");
+        }
+      } catch (error) {
+        console.error("Error al analizar JSON:", error);
+      }
+    },
+    mostrarModal() {
+      this.estadoModal = true;
+    },
+    ocultarModal() {
+      this.estadoModal = false;
+    },
+    verPersonaje(url) {
   if (navigator.onLine) {
     fetch(url)
       .then((response) => {
@@ -136,7 +140,7 @@
         this.mostrarModal();
       })
       .catch(() => {
-        this.personajeElegido = null;
+        this.personajeElegido = this.obtenerPersonajeStorage(url);
         this.mensajeAgregado = false;
         this.mostrarModal();
       });
@@ -164,32 +168,34 @@
         this.mostrarModal();
       })
       .catch(() => {
-        this.personajeElegido = null;
+        this.personajeElegido = this.obtenerPersonajeStorage(url);
         this.mensajeAgregado = false;
         this.mostrarModal();
       });
   }
 },
-
-
-      limpiarLocalStorage() {
-        localStorage.removeItem("storage");
-        this.storage = [];
-      },
+    limpiarLocalStorage() {
+      localStorage.removeItem("storage");
+      this.storage = [];
     },
-    async mounted() {
-      this.obtenerLocalStorage();
-      if (this.personajes.length === 0) {
-        const response = await fetch("https://rickandmortyapi.com/api/character/?page=2&species=alien");
-        const data = await response.json();
-        this.personajes = data.results;
-        this.guardarLocalStorage();
-      }
-    },
-  };
-  </script>
+  },
+  async mounted() {
+    this.obtenerLocalStorage();
+    if (this.personajes.length === 0) {
+      const response = await fetch("https://rickandmortyapi.com/api/character/?page=2&species=alien");
+      const data = await response.json();
+      this.personajes = data.results;
+      this.guardarLocalStorage();
+    }
+  },
+};
+</script>
   
   
   <style scoped>
    @import "@/assets/styles.css";
+
+   .msjito{
+    color: whitesmoke;
+   }
   </style>

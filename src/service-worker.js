@@ -28,12 +28,55 @@ self.addEventListener('fetch', (event) => {
         return cache.match(request).then((response) => {
           return (
             response ||
-            fetch(request).then((networkResponse) => {
-              if (networkResponse.ok) {
-                cache.put(request, networkResponse.clone());
-              }
-              return networkResponse;
-            })
+            fetch(request)
+              .then((networkResponse) => {
+                if (networkResponse.ok) {
+                  // Almacena la respuesta en caché antes de devolverla
+                  cache.put(request, networkResponse.clone());
+                  return networkResponse.clone();
+                } else {
+                  throw new Error('No se pudo cargar el personaje');
+                }
+              })
+              .catch((error) => {
+                console.error('Error al hacer la solicitud de red:', error);
+                throw new Error('No se pudo cargar el personaje');
+              })
+          );
+        });
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(request).then((response) => {
+        return response || fetch(request);
+      })
+    );
+  }
+});self.addEventListener('fetch', (event) => {
+  const { request } = event;
+
+  // Verificamos si la solicitud es a la API
+  if (request.url.includes('/api/characters')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(request).then((response) => {
+          return (
+            response ||
+            fetch(request)
+              .then((networkResponse) => {
+                if (networkResponse.ok) {
+                  // Almacena la respuesta en caché antes de devolverla
+                  cache.put(request, networkResponse.clone());
+                  return networkResponse.clone();
+                } else {
+                  throw new Error('No se pudo cargar el personaje');
+                }
+              })
+              .catch((error) => {
+                console.error('Error al hacer la solicitud de red:', error);
+                throw new Error('No se pudo cargar el personaje');
+              })
           );
         });
       })
