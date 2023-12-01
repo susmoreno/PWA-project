@@ -6,7 +6,6 @@ import './registerServiceWorker';
 
 Vue.config.productionTip = false;
 
-// Almacenar el evento beforeinstallprompt globalmente
 window.installPromptEvent = null;
 
 new Vue({
@@ -14,17 +13,13 @@ new Vue({
   AnimateCSS,
   render: (h) => h(App),
   mounted() {
-    // Manejar el evento beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (event) => {
       console.log('handleBeforeInstallPrompt: Evento de instalación disponible');
-      // Almacenar el evento globalmente
       window.installPromptEvent = event;
     });
 
-    // Manejar el evento appinstalled
     window.addEventListener('appinstalled', () => {
       console.log('La aplicación se instaló con éxito');
-      // Restablecer el evento global
       window.installPromptEvent = null;
     });
   },

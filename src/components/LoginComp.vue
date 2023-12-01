@@ -38,7 +38,6 @@ export default {
     };
   },
   mounted() {
-    // Escucha cambios en la autenticación
     auth.onAuthStateChanged((user) => {
       this.user = user;
     });

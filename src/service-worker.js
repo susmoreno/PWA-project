@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mi-pwa-parcial-cache';
+const CACHE_NAME = 'mi-pwa-parcial-cache-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -21,7 +21,6 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Verificamos si la solicitud es a la API
   if (request.url.includes('/api/characters')) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) => {
@@ -31,7 +30,6 @@ self.addEventListener('fetch', (event) => {
             fetch(request)
               .then((networkResponse) => {
                 if (networkResponse.ok) {
-                  // Almacena la respuesta en caché antes de devolverla
                   cache.put(request, networkResponse.clone());
                   return networkResponse.clone();
                 } else {
@@ -56,7 +54,6 @@ self.addEventListener('fetch', (event) => {
 });self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Verificamos si la solicitud es a la API
   if (request.url.includes('/api/characters')) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) => {
@@ -66,7 +63,6 @@ self.addEventListener('fetch', (event) => {
             fetch(request)
               .then((networkResponse) => {
                 if (networkResponse.ok) {
-                  // Almacena la respuesta en caché antes de devolverla
                   cache.put(request, networkResponse.clone());
                   return networkResponse.clone();
                 } else {
