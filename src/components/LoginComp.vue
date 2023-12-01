@@ -1,13 +1,11 @@
 <template>
   <div>
-    <!-- Verifica si el usuario está autenticado -->
-    <div v-if="user">
+    <div class="fondito" v-if="user">
       <p>Bienvenido, {{ user.email }}</p>
       <button @click="signOut">Cerrar Sesión</button>
     </div>
-    <!-- Si no está autenticado, muestra los campos de inicio de sesión/registro -->
-    <div v-else>
-      <form @submit.prevent="signIn">
+    <div class="fondito" v-else>
+      <form class="flexxx" @submit.prevent="signIn">
         <label>Email:</label>
         <input v-model="email" type="email" placeholder="correo@example.com" autocomplete="username" />
 
@@ -76,3 +74,51 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  @import "@/assets/styles.css";
+
+  .loading-screen p {
+    color: whitesmoke;
+    font-size: 2rem;
+  }
+
+  .flexxx{
+    display: flex;
+    flex-direction: column;
+  }
+
+.fondito{
+  background-color: rgb(27, 27, 27);
+  border-radius: 10px;
+  padding: 1rem;
+  color: yellowgreen;
+  width: 30%;
+  margin: auto;
+}
+
+input {
+  margin: 1rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+label{
+  font-size: 2rem;
+}
+button {
+  border: none;
+  border-radius: 10px;
+  width: 30%;
+  margin: auto;
+}
+
+button:hover{
+  background-color: yellowgreen;
+}
+
+.fondito p{
+  font-size: 1.7rem;
+  color: yellowgreen;
+  padding: 1.3rem;
+}
+</style>
